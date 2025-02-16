@@ -38,10 +38,20 @@ export const fetchShipment=async(id)=>{
 //update location 
 export const updateLocation=async(id, currentLocation)=>{
     try {
-        const response=await axios.put(`${API_URL}/shipment/${id}/update-location`,{currentLocation})
+        const response=await axios.put(`${API_URL}/shipment/${id}/update-location`,{ newLocation: { name: currentLocation }})
         return response.data;
     } catch (error) {
         console.log(error);
         throw error;
     }
 }
+// Update shipment status
+export const updateStatus = async (id, status) => {
+    try {
+        const response = await axios.put(`${API_URL}/shipment/${id}`, { status });
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};

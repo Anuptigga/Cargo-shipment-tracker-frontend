@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
-import { format } from "date-fns";
+import {differenceInDays, parseISO, isFuture } from "date-fns";
 import { fetchShipments } from "../api/index";
 
 const Container = styled.div`
@@ -62,7 +62,7 @@ const Select = styled.select`
 function Dashboard() {
   const [shipments, setShipments] = useState([]);
   const [filterStatus, setFilterStatus] = useState("");
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getShipments = async () => {
@@ -95,6 +95,20 @@ function Dashboard() {
   const filteredShipments = filterStatus
     ? shipments.filter((s) => s.status === filterStatus)
     : shipments;
+
+  // Format ETA
+  const formatDate = (eta) => {
+    if (!eta) return "N/A";
+  
+    const etaDate = parseISO(eta);
+    const today = new Date();
+  
+    if (isFuture(etaDate)) {
+      return `${differenceInDays(etaDate, today)+2} days`;
+    } else {
+      return `${differenceInDays(today, etaDate)} days ago`;
+    }
+  };
 
   return (
     <Container>
@@ -145,8 +159,8 @@ function Dashboard() {
               <Tr key={s._id}>
                 <Td onClick={() => navigate(`/shipment/${s._id}`)}>{s._id}</Td>
                 <Td>{s.containerId}</Td>
-                <Td>{s.currentLocation}</Td>
-                <Td>{format(new Date(s.ETA), "yyyy-MM-dd")}</Td>
+                <Td>{s.currentLocation.name}</Td>
+                <Td>{formatDate(s.ETA)} Days</Td>
                 <Td>{s.status}</Td>
               </Tr>
             ))}

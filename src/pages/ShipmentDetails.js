@@ -2,21 +2,19 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
-import { fetchShipment } from "../api/index";
+import { fetchShipment, updateStatus } from "../api/index";
 import { format } from "date-fns";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet-routing-machine";
 
-// Custom map marker icon
 const customIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
 
-// Styled components
 const Container = styled.div`
   position: relative;
 `;
@@ -34,7 +32,8 @@ const DetailsContainer = styled.div`
   top: 120px;
 `;
 
-const InfoWrapper=styled.div``;
+const InfoWrapper=styled.div`
+z-index:1;`;
 
 const DetailItem = styled.p`
   font-size: 16px;
@@ -45,52 +44,56 @@ const Button=styled.button`
   height: 40px;
   width: 150px;
   background: rgba(172, 177, 255, 0.73);
-  margin:5px 0;
+  margin:5px 5px;
   border-style: 2px solid rgba(98, 35, 236);
   border-radius: 4px;
   cursor: pointer;
   color:rgb(122, 83, 231)
+`;
+const StatusWrapper=styled.div`
+  position:absolute;
+  height:400px;
+  width:400px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:3;
+  background:rgba(0, 0, 0, 0.67);
 `;
 
 const MapWrapper = styled.div`
   width: 600px;
   height: 400px;
   margin-top: 20px;
+  z-index:1;
 `;
 
-// RoutingMachine component adds the route to the map
 const RoutingMachine = ({ route }) => {
   const map = useMap();
 
   useEffect(() => {
     if (!map || route.length < 2) return;
-
-    // Create the routing control with desired options
     const routingControl = L.Routing.control({
       waypoints: route.map((point) => L.latLng(point.lat, point.lng)),
       lineOptions: {
         styles: [{ color: "blue", weight: 4 }],
       },
-      createMarker: () => null, // Disable default markers
+      createMarker: () => null,
       router: L.Routing.osrmv1({
         serviceUrl: "https://router.project-osrm.org/route/v1",
       }),
       routeWhileDragging: true,
-      collapsed: true, // Start collapsed so the panel is hidden
+      collapsed: true,
     }).addTo(map);
 
-    // Hide the control's container via CSS (optional)
     const controlContainer = routingControl.getContainer();
     if (controlContainer) {
       controlContainer.style.display = "none";
     }
-
-    // Cleanup: clear waypoints before removing the control to avoid errors
     return () => {
       try {
-        // Clear the waypoints which removes the drawn route lines
         routingControl.getPlan().setWaypoints([]);
-        // Now remove the control
         map.removeControl(routingControl);
       } catch (e) {
         console.error("Error removing routing control", e);
@@ -104,24 +107,19 @@ const RoutingMachine = ({ route }) => {
 function ShipmentDetails() {
   const { id } = useParams();
   const [shipment, setShipment] = useState(null);
+  const [route, setRoute] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  // Hardcoded route for now (replace with API data later)
-  const hardcodedRoute = [
-    { lat: 23.4415853, lng: 84.6869862 }, // Example: Lohardaga
-    { lat: 23.3441127, lng: 85.3094015 }, // Example: Ranchi
-  ];
-
-  // Hardcoded current location (assumed as the first point)
-  const hardcodedCurrentLocation = hardcodedRoute[0];
+  const [view,setView]=useState (false);
 
   useEffect(() => {
     const getShipmentDetails = async () => {
       try {
         const data = await fetchShipment(id);
         setShipment(data);
+        setRoute(data.route.map((points)=>points.coordinates));
+        console.log(data.route.map((points)=>points.coordinates));
       } catch {
         setError("Failed to fetch shipment details");
       } finally {
@@ -131,6 +129,17 @@ function ShipmentDetails() {
 
     getShipmentDetails();
   }, [id]);
+
+
+  const handleStatusUpdate = async (newStatus) => {
+    try {
+      await updateStatus(id, newStatus);
+      setShipment((prev) => ({ ...prev, status: newStatus }));
+      setView(false);
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   return (
     <Container>
@@ -144,31 +153,24 @@ function ShipmentDetails() {
           <DetailsContainer>
             <InfoWrapper>
           <h2>Shipment Details</h2>
-            <DetailItem>
-              <b>Shipment ID:</b> {shipment._id}
-            </DetailItem>
-            <DetailItem>
-              <b>Container ID:</b> {shipment.containerId}
-            </DetailItem>
-            <DetailItem>
-              <b>Current Location:</b> {shipment.currentLocation}
-            </DetailItem>
-            <DetailItem>
-              <b>Destination:</b> {shipment.destination}
-            </DetailItem>
-            <DetailItem>
-              <b>Status:</b> {shipment.status}
-            </DetailItem>
-            <DetailItem style={{color:"blue", cursor:"pointer"}} onClick={() => navigate(`/shipment/${id}/eta`)}>
-              <b>ETA:</b> {format(new Date(shipment.ETA), "yyyy-MM-dd")}
-            </DetailItem>
+            <DetailItem><b>Shipment ID:</b> {shipment._id}</DetailItem>
+            <DetailItem><b>Container ID:</b> {shipment.containerId}</DetailItem>
+            <DetailItem><b>Current Location:</b> {shipment.currentLocation.name}</DetailItem>
+            <DetailItem><b>Destination:</b> {shipment.destination.name}</DetailItem>
+            <DetailItem><b>Status:</b> {shipment.status}</DetailItem>
+            <DetailItem><b>ETA:</b> {format(new Date(shipment.ETA), "yyyy-MM-dd")}</DetailItem>
             <Button onClick={() => navigate(`/shipment/${id}/update-location`)}>Update Location</Button>
+            <Button onClick={()=>setView(!view)}>Update Status</Button>
           </InfoWrapper>
-
-            {/* Interactive Map */}
+          { view &&
+          <StatusWrapper>
+            <Button onClick={()=>handleStatusUpdate("In Transit")}>In Transit</Button>
+            <Button onClick={()=>handleStatusUpdate("Delivered")}>Delivered</Button>
+          </StatusWrapper> 
+          }
             <MapWrapper>
               <MapContainer
-                center={hardcodedCurrentLocation}
+                center={shipment.currentLocation.coordinates}
                 zoom={8}
                 style={{ width: "100%", height: "100%" }}
                 >
@@ -177,20 +179,21 @@ function ShipmentDetails() {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
 
-                {/* Marker for Current Location */}
-                <Marker position={hardcodedCurrentLocation} icon={customIcon}>
+                <Marker position={shipment.currentLocation.coordinates} icon={customIcon}>
                   <Popup>Current Location</Popup>
                 </Marker>
 
-                {/* Markers for each point in the route */}
-                {hardcodedRoute.map((point, index) => (
+                <Marker position={shipment.destination.coordinates} icon={customIcon}>
+                  <Popup>Current Location</Popup>
+                </Marker>
+
+                {route.map((point, index) => (
                   <Marker key={index} position={point} icon={customIcon}>
                     <Popup>Route Point {index + 1}</Popup>
                   </Marker>
                 ))}
 
-                {/* Display the actual route using the RoutingMachine */}
-                <RoutingMachine route={hardcodedRoute} />
+                <RoutingMachine route={route} />
               </MapContainer>
             </MapWrapper>
           </DetailsContainer>

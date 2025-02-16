@@ -3,23 +3,24 @@ import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { updateLocation } from "../api";
+import Footer from "../components/Footer";
 
 const Container = styled.div`
-  position: relative;
+  font-family: Arial, sans-serif;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
 `;
 
 const FormContainer = styled.form`
-  width: 50%;
+  width:100%;
   background: rgba(200, 200, 250, 0.4);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  top: 120px;
+  margin:20px 0;
+  box-sizing:border-box;
 `;
 
 const Input = styled.input`
@@ -29,12 +30,21 @@ const Input = styled.input`
 `;
 
 const SubmitButton = styled.button`
-  width: 150px;
-  height: 50px;
-  margin-top: 10px;
-  color: rgba(90, 0, 255, 0.6);
+   height: 40px;
+  width: 160px;
+  background: rgba(172, 177, 255, 0.9);
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 15px;
+  color: #5a00ff;
+  font-weight: 600;
+  margin: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(140, 150, 255, 1);
+    color: white;
+  }
 `;
 
 function UpdateLocation() {
@@ -70,6 +80,7 @@ function UpdateLocation() {
         />
         <SubmitButton type="submit">Update</SubmitButton>
       </FormContainer>
+      < Footer/>
     </Container>
   );
 }

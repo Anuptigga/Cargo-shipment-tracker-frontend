@@ -1,62 +1,94 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import {differenceInDays, parseISO, isFuture } from "date-fns";
 import { fetchShipments } from "../api/index";
+import Footer from "../components/Footer";
 
 const Container = styled.div`
-  position: relative;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  background-color: #f4f4f4;
 `;
 
-const Title = styled.h1``;
-
 const DashContainer = styled.div`
-  width: 100%;
+  max-width: 90%;
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
+const Title = styled.h1`
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 15px;
+`;
+
 const Table = styled.table`
-  width: 60%;
-  border: 1px solid black;
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 `;
 
 const Tr = styled.tr`
-  border: 1px solid black;
-`;
-
-const Th = styled.th`
-  background: rgba(172, 177, 255, 0.73);
-`;
-
-const Filter = styled.span``;
-
-const Td = styled.td`
-  background: rgba(172, 178, 255, 0.36);
-  cursor: pointer; /* Make Shipment ID clickable */
+  &:nth-child(even) {
+    background:rgb(244, 244, 244);
+  }
   &:hover {
-    text-decoration: underline;
+    background: rgba(172, 178, 255, 0.36);
   }
 `;
 
-const Button = styled.button`
-  height: 30px;
-  width: 150px;
-  background: rgba(172, 177, 255, 0.73);
-  border-style: none;
-  margin: 5px;
-  position: absolute;
-  left: 60%;
-  cursor: pointer;
+const Th = styled.th`
+  background:rgba(90, 0, 225);
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  text-align: left;
+  position: relative;
+`;
+
+const Td = styled.td`
+  padding: 12px;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+`;
+
+const Filter = styled.span`
+  display: inline-flex;
+  margin-left: 10px;
+  align-items: center;
 `;
 
 const Select = styled.select`
-  margin-bottom: 10px;
-  padding: 5px;
+  padding: 8px;
   font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 15px;
+`;
+
+const Button = styled.button`
+  background:rgba(90, 0, 225);
+  color: white;
+  font-size: 16px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.3s;
+
+  &:hover {
+    background: #4a00cc;
+  }
 `;
 
 function Dashboard() {
@@ -157,7 +189,7 @@ function Dashboard() {
           <tbody>
             {filteredShipments.map((s) => (
               <Tr key={s._id}>
-                <Td onClick={() => navigate(`/shipment/${s._id}`)}>{s._id}</Td>
+                <Td style={{cursor:"pointer", textDecoration:"underline"}} onClick={() => navigate(`/shipment/${s._id}`)}>{s._id}</Td>
                 <Td>{s.containerId}</Td>
                 <Td>{s.currentLocation.name}</Td>
                 <Td>{formatDate(s.ETA)} Days</Td>
@@ -166,8 +198,9 @@ function Dashboard() {
             ))}
           </tbody>
         </Table>
-      </DashContainer>
       <Button onClick={() => navigate("/shipment")}>+ New Shipment</Button>
+      </DashContainer>
+      <Footer/>
     </Container>
   );
 }

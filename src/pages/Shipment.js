@@ -22,6 +22,9 @@ const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  @media(max-width:768px){
+  max-width:300px;
+  }
 `;
 
 const FormTitle = styled.h3`
@@ -41,6 +44,9 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
+  @media(max-width:768px){
+  width:90%;
+  }
 `;
 
 const Select = styled.select`

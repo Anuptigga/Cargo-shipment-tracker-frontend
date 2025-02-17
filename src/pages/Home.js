@@ -10,6 +10,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
 `;
 
 const HeroSection = styled.div`
@@ -38,16 +39,27 @@ const HeroContent = styled.div`
   position: relative;
   z-index: 1;
   color: white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 `;
 
 const Title = styled.h1`
   font-size: 50px;
   font-weight: 700;
   margin-bottom: 10px;
+
+  @media (max-width:768px){
+  font-size:32px;
+  }
 `;
 
 const Subtitle = styled.p`
   font-size: 22px;
+  @media(max-width:768px){
+  font-size:18px;
+  }
 `;
 
 const SearchContainer = styled.div`
@@ -59,6 +71,11 @@ const SearchContainer = styled.div`
   border-radius: 8px;
   margin-top: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+   @media (max-width: 768px) {
+    width: 80%;
+    padding: 10px;
+  }
 `;
 
 const Input = styled.input`
@@ -88,16 +105,20 @@ const Button = styled.button`
 
 const Temp = styled.div`
   margin-top: 10px;
-  padding: 6px;
+  width:200px;
+  height:50px;
+  border-radius:5px;
   cursor: pointer;
-  color: #0033cc;
-  text-decoration: underline;
+  color: white;
   font-weight: 600;
-  background:white;
+  background:rgba(90,0,225,1);
+  display:flex;
+  justify-content:center;
+  align-items:center;
 `;
 
 const Section = styled.div`
-  width: 80%;
+  width: 75%;
   margin: 60px auto;
   text-align: center;
 `;
@@ -113,6 +134,10 @@ const FeaturesContainer = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
+
+  @media(max-width:768px){
+  flex-direction:column;
+  }
 `;
 
 const FeatureCard = styled.div`
@@ -138,6 +163,11 @@ const FeatureCard = styled.div`
   p {
     font-size: 16px;
     color: #555;
+  }
+
+  @media(max-width:768px){
+  width:90%;
+  align-itmes:center;
   }
 `;
 
@@ -167,7 +197,7 @@ function HomePage() {
             />
             <Button onClick={handleSearch}>Track</Button>
           </SearchContainer>
-          <Temp onClick={() => navigate(`/shipments`)}>Click here for testing View All Shipments</Temp>
+          <Temp onClick={() => navigate(`/shipments`)}>View All Shipments</Temp>
         </HeroContent>
       </HeroSection>
       

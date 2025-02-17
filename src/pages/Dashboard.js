@@ -25,8 +25,14 @@ const Title = styled.h1`
   font-size: 28px;
   color: #333;
   margin-bottom: 15px;
+  @media(max-width:768px){
+  font-size:24px;
+  }
 `;
-
+const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`;
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -34,6 +40,9 @@ const Table = styled.table`
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
+  @media(max-width:768px){
+  font-size:12px;
+  }
 `;
 
 const Tr = styled.tr`
@@ -52,6 +61,10 @@ const Th = styled.th`
   font-size: 16px;
   text-align: left;
   position: relative;
+  @media (max-width: 768px) {
+    font-size: 14px;
+    padding: 8px;
+  }
 `;
 
 const Td = styled.td`
@@ -59,6 +72,10 @@ const Td = styled.td`
   font-size: 14px;
   color: #333;
   text-align: left;
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: 12px;
+  }
 `;
 
 const Filter = styled.span`
@@ -73,6 +90,10 @@ const Select = styled.select`
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 15px;
+  @media (max-width: 768px) {
+  font-size: 12px;
+  padding: 6px;
+  }
 `;
 
 const Button = styled.button`
@@ -136,9 +157,9 @@ function Dashboard() {
     const today = new Date();
   
     if (isFuture(etaDate)) {
-      return `${differenceInDays(etaDate, today)+2} days`;
+      return `${differenceInDays(etaDate, today)+2}`;
     } else {
-      return `${differenceInDays(today, etaDate)} days ago`;
+      return `${differenceInDays(today, etaDate)}`;
     }
   };
 
@@ -152,6 +173,7 @@ function Dashboard() {
           <option value="In Transit">In Transit</option>
           <option value="Delivered">Delivered</option>
         </Select>
+        <TableWrapper>
         <Table>
           <thead>
             <Tr>
@@ -161,11 +183,11 @@ function Dashboard() {
                   <ArrowDropDown
                     style={{ cursor: "pointer" }}
                     onClick={() => handleSortDecreasing("_id")}
-                  />
+                    />
                   <ArrowDropUp
                     style={{ cursor: "pointer" }}
                     onClick={() => handleSortIncreasing("_id")}
-                  />
+                    />
                 </Filter>
               </Th>
               <Th>
@@ -174,7 +196,7 @@ function Dashboard() {
                   <ArrowDropDown
                     style={{ cursor: "pointer" }}
                     onClick={() => handleSortDecreasing("containerId")}
-                  />
+                    />
                   <ArrowDropUp
                     style={{ cursor: "pointer" }}
                     onClick={() => handleSortIncreasing("containerId")}
@@ -192,12 +214,13 @@ function Dashboard() {
                 <Td style={{cursor:"pointer", textDecoration:"underline"}} onClick={() => navigate(`/shipment/${s._id}`)}>{s._id}</Td>
                 <Td>{s.containerId}</Td>
                 <Td>{s.currentLocation.name}</Td>
-                <Td>{formatDate(s.ETA)} Days</Td>
+                <Td>In {formatDate(s.ETA)} days</Td>
                 <Td>{s.status}</Td>
               </Tr>
             ))}
           </tbody>
         </Table>
+      </TableWrapper>
       <Button onClick={() => navigate("/shipment")}>+ New Shipment</Button>
       </DashContainer>
       <Footer/>

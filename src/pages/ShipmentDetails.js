@@ -20,17 +20,25 @@ const Container = styled.div`
   position: relative;
   font-family: Arial, sans-serif;
 `;
-
 const DetailsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 30px;
+  @media(max-width:768px){
+  flex-direction:column;
+  padding:5px;
+  }
 `;
 
 const InfoWrapper=styled.div`
 z-index:1;
 padding:15px;
+@media(max-width:768px){
+display:flex;
+flex-direction:column;
+padding:5px;
+}
 `;
 
 const DetailItem = styled.p`
@@ -38,6 +46,9 @@ const DetailItem = styled.p`
   margin: 8px 0;
   color: #333;
   font-weight: 500;
+  @media(max-width:768px){
+  font-size:14px;
+  }
 `;
 
 const Button=styled.button`
@@ -72,13 +83,19 @@ const StatusWrapper=styled.div`
 `;
 
 const MapWrapper = styled.div`
-  width: 600px;
+ width: 100%;
+  max-width: 600px;
   height: 400px;
   margin-top: 20px;
   z-index: 1;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 300px;
+  }
 `;
 
 const RoutingMachine = ({ route }) => {
@@ -164,7 +181,7 @@ function ShipmentDetails() {
           <>
           <DetailsContainer>
             <InfoWrapper>
-          <h2>Shipment Details</h2>
+           <h2>Shipment Details</h2>
             <DetailItem><b>Shipment ID:</b> {shipment._id}</DetailItem>
             <DetailItem><b>Container ID:</b> {shipment.containerId}</DetailItem>
             <DetailItem><b>Current Location:</b> {shipment.currentLocation.name}</DetailItem>
@@ -176,13 +193,13 @@ function ShipmentDetails() {
             <Button onClick={() => navigate(`/shipment/${id}/update-location`)}>Update Location</Button>
             }
             <Button onClick={()=>setView(!view)}>Update Status</Button>
-          </InfoWrapper>
-          { view &&
-          <StatusWrapper>
+           </InfoWrapper>
+           { view &&
+           <StatusWrapper>
             <Button onClick={()=>handleStatusUpdate("In Transit")}>In Transit</Button>
             <Button onClick={()=>handleStatusUpdate("Delivered")}>Delivered</Button>
-          </StatusWrapper> 
-          }
+           </StatusWrapper> 
+           }
             <MapWrapper>
               <MapContainer
                 center={shipment.currentLocation.coordinates}

@@ -203,7 +203,7 @@ function ShipmentDetails() {
             <MapWrapper>
               <MapContainer
                 center={shipment.currentLocation.coordinates}
-                zoom={8}
+                zoom={4}
                 style={{ width: "100%", height: "100%" }}
                 >
                 <TileLayer

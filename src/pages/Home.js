@@ -71,11 +71,6 @@ const SearchContainer = styled.div`
   border-radius: 8px;
   margin-top: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-
-   @media (max-width: 768px) {
-    width: 80%;
-    padding: 10px;
-  }
 `;
 
 const Input = styled.input`
@@ -84,6 +79,10 @@ const Input = styled.input`
   padding: 12px;
   width: 320px;
   font-size: 18px;
+
+  @media(max-width:768px){
+    width:200px;
+  }
 `;
 
 const Button = styled.button`
@@ -100,6 +99,11 @@ const Button = styled.button`
 
   &:hover {
     background: rgba(90, 0, 255, 0.7);
+  }
+  @media(max-width:768px){
+    font-size:14px;
+    font-weight:400;
+    margin-left:-10px;
   }
 `;
 
@@ -191,12 +195,13 @@ function HomePage() {
           <SearchContainer>
             <Input 
               type="text" 
-              placeholder="Enter container ID..." 
+              placeholder="Enter shipment ID..." 
               value={trackingId}
               onChange={(e) => setTrackingId(e.target.value)}
             />
             <Button onClick={handleSearch}>Track</Button>
           </SearchContainer>
+          for demo use 67a890ada4d76e1ecd0b9fdb <br/>or click the button below 
           <Temp onClick={() => navigate(`/shipments`)}>View All Shipments</Temp>
         </HeroContent>
       </HeroSection>

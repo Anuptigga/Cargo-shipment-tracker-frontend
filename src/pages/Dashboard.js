@@ -116,6 +116,7 @@ function Dashboard() {
   const [shipments, setShipments] = useState([]);
   const [filterStatus, setFilterStatus] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading]=useState(true);
 
   useEffect(() => {
     const getShipments = async () => {
@@ -124,6 +125,9 @@ function Dashboard() {
         setShipments(data);
       } catch (error) {
         console.error("Error fetching shipments:", error);
+      }
+      finally{
+        setLoading(false);
       }
     };
     getShipments();
@@ -173,6 +177,10 @@ function Dashboard() {
           <option value="In Transit">In Transit</option>
           <option value="Delivered">Delivered</option>
         </Select>
+
+        {loading?(
+          <p>Fectcing data...</p>
+        ):<>
         <TableWrapper>
         <Table>
           <thead>
@@ -200,7 +208,7 @@ function Dashboard() {
                   <ArrowDropUp
                     style={{ cursor: "pointer" }}
                     onClick={() => handleSortIncreasing("containerId")}
-                  />
+                    />
                 </Filter>
               </Th>
               <Th>Current Location</Th>
@@ -221,6 +229,7 @@ function Dashboard() {
           </tbody>
         </Table>
       </TableWrapper>
+    </>}
       <Button onClick={() => navigate("/shipment")}>+ New Shipment</Button>
       </DashContainer>
       <Footer/>

@@ -27,6 +27,9 @@ const Input = styled.input`
   width: 400px;
   height: 40px;
   margin: 10px 0;
+  @media(max-width:768px){
+  width:350px;
+  }
 `;
 
 const SubmitButton = styled.button`

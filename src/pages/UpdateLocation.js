@@ -33,7 +33,7 @@ const Input = styled.input`
 `;
 
 const SubmitButton = styled.button`
-   height: 40px;
+  height: 40px;
   width: 160px;
   background: rgba(172, 177, 255, 0.9);
   border: none;

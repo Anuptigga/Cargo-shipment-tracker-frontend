@@ -154,12 +154,23 @@ function Dashboard() {
     : shipments;
 
   // Format ETA
-  const formatDate = (eta) => {
-    if (!eta) return "N/A";
+  // const formatDate = (eta) => {
+  //   if (!eta) return "N/A";
   
+  //   const etaDate = parseISO(eta);
+  //   const today = new Date();
+  
+  //   if (isFuture(etaDate)) {
+  //     return `${differenceInDays(etaDate, today)+2}`;
+  //   } else {
+  //     return `${differenceInDays(today, etaDate)}`;
+  //   }
+  // };
+  const formatDate = (eta, status) => {
+    if (!eta) return "N/A";
+    if (status === "Delivered") return "0";
     const etaDate = parseISO(eta);
     const today = new Date();
-  
     if (isFuture(etaDate)) {
       return `${differenceInDays(etaDate, today)+2}`;
     } else {
@@ -222,7 +233,8 @@ function Dashboard() {
                 <Td style={{cursor:"pointer", textDecoration:"underline"}} onClick={() => navigate(`/shipment/${s._id}`)}>{s._id}</Td>
                 <Td>{s.containerId}</Td>
                 <Td>{s.currentLocation.name}</Td>
-                <Td>In {formatDate(s.ETA)} days</Td>
+                {/* <Td>In {formatDate(s.ETA)} days</Td> */}
+                <Td>In {formatDate(s.ETA, s.status)} days</Td>
                 <Td>{s.status}</Td>
               </Tr>
             ))}
